@@ -1,4 +1,4 @@
-// Jonas Gava, Rafael Koch Peres -- 
+// NOMES:  
 // ENG10032 - Microcontroladores -- Prova P2
 
 #include "pwm.h"

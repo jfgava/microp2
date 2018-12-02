@@ -1,3 +1,6 @@
+// NOMES:  
+// ENG10032 - Microcontroladores -- Prova P2
+
 #include "galileo2io.h"
 #include "rw_io.h"
 #include <stdio.h>

@@ -1,4 +1,5 @@
-//
+// NOMES:  
+// ENG10032 - Microcontroladores -- Prova P2
 
 #include <errno.h>
 #include <fcntl.h>
@@ -65,7 +66,7 @@ int initLCD(){ // Return file_descriptor
 	return fd;
 }
 
-void setRGB(int fd,int red, int green, int blue){ //Escala RGB
+void setRGB(int fd,int red, int green, int blue){ //RGB BL
 	if((red>=0 && red<256) && (green>=0 && green<256) && (blue>=0 && blue<256)){
 		if(ioctl(fd,I2C_SLAVE,BL_ADDR) < 0) i2c_error("ioctl on /dev/i2c-0");
 		i2c_write_reg(fd,BL_MODE1,0);
@@ -102,49 +103,3 @@ void finishLCD(int fd){
 	close(fd);
 }
 
-/*
-int main(int argc,char *argv[])
-{
-        int i;
-		time_t t;
-		time_t t0=0;
-		int n;
-		struct tm lt;
-		char timestr[33];
-		struct sigaction act;
-        
-        act.sa_handler=quit;
-        sigaction(SIGINT,&act,NULL);
-        sigaction(SIGTERM,&act,NULL);
-
-        while(run)
-        {
-                while((t=time(NULL)) == t0);
-                t0=t;
-                localtime_r(&t,&lt);
-
-                if(ioctl(fd,I2C_SLAVE,LCD_ADDR) < 0) i2c_error("ioctl on /dev/i2c-0");
-                
-                i2c_write_reg(fd,LCD_C0,LCD_DDRAMADDRSET | 0);
-                n=strftime(timestr,sizeof timestr,"%a %d %b %Y",&lt);
-                for(i=0;i < n;i++) i2c_write_reg(fd,LCD_RS,timestr[i]);
-
-                i2c_write_reg(fd,LCD_C0,LCD_DDRAMADDRSET | 0x40);
-                n=strftime(timestr,sizeof timestr,"%T %Z",&lt);
-                for(i=0;i < n;i++) i2c_write_reg(fd,LCD_RS,timestr[i]);
-		
-				//ioctl serve para executar comandos diferentes de read/write no barramento
-				//Neste caso, define o endereço do escravo (BL_ADDR)
-                if(ioctl(fd,I2C_SLAVE,BL_ADDR) < 0) i2c_error("ioctl on /dev/i2c-0");
-                i2c_write_reg(fd,BL_RED,rand());
-                i2c_write_reg(fd,BL_GREEN,rand());
-                i2c_write_reg(fd,BL_BLUE,rand());
-                
-                usleep(990000);
-        }
-
-        close(fd);
-
-	return 0;
-}
-*/

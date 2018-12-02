@@ -1,4 +1,5 @@
-//
+// NOMES:  
+// ENG10032 - Microcontroladores -- Prova P2
 
 #ifndef ADC_H
 #define ADC_H

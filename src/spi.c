@@ -1,5 +1,5 @@
-// Jonas Gava, Juei Weng e Rafael Koch Peres -- 
-// ENG10032 - Microcontroladores -- Projeto Final
+// NOMES:  
+// ENG10032 - Microcontroladores -- Prova P2
 
 #include <fcntl.h>
 #include <stdint.h>

@@ -12,7 +12,7 @@
 
 case "$1" in
     start|restart|force-reload)
-    # IO4 = Fim de curso 1
+    # IO4 input pullup
     if [ ! -d /sys/class/gpio/gpio36 ] ; then
 	    echo -n "36" > /sys/class/gpio/export
 	fi
@@ -30,18 +30,16 @@ case "$1" in
 	chgrp gpio /sys/class/gpio/gpio6/value
 	chmod g+rw /sys/class/gpio/gpio6/value
     
-    # IO5 = Fim de curso 2 
+    # IO5 input pullup 
     if [ ! -d /sys/class/gpio/gpio18 ] ; then
 	    echo -n "18" > /sys/class/gpio/export
 	fi
 	echo -n "high" > /sys/class/gpio/gpio18/direction
-	#echo -n "1" > /sys/class/gpio/gpio18/value
 	
 	if [ ! -d /sys/class/gpio/gpio19 ] ; then
 	    echo -n "19" > /sys/class/gpio/export
 	fi
 	echo -n "high" > /sys/class/gpio/gpio19/direction
-	#echo -n "1" > /sys/class/gpio/gpio19/value
 	
 	if [ ! -d /sys/class/gpio/gpio66 ] ; then
 	    echo -n "66" > /sys/class/gpio/export

@@ -1,3 +1,5 @@
+// NOMES:  
+// ENG10032 - Microcontroladores -- Prova P2
 
 #ifndef SPI_H
 #define SPI_H
