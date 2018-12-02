@@ -12,6 +12,26 @@
 
 case "$1" in
     start|restart|force-reload)
+# IO2 output
+	if [ ! -d /sys/class/gpio/gpio13 ] ; then
+	    echo -n "13" > /sys/class/gpio/export
+	fi
+	echo -n "out" > /sys/class/gpio/gpio13/direction
+	echo -n "0" > /sys/class/gpio/gpio13/value
+	chgrp gpio /sys/class/gpio/gpio13/value
+	chmod g+r /sys/class/gpio/gpio13/value
+	
+	if [ ! -d /sys/class/gpio/gpio34 ] ; then
+	    echo -n "34" > /sys/class/gpio/export
+	fi
+	echo -n "out" > /sys/class/gpio/gpio34/direction
+	echo -n "0" > /sys/class/gpio/gpio34/value
+	
+	if [ ! -d /sys/class/gpio/gpio77 ] ; then
+	    echo -n "77" > /sys/class/gpio/export
+	fi
+	echo -n "0" > /sys/class/gpio/gpio77/value
+	
 # IO4 input pullup
     if [ ! -d /sys/class/gpio/gpio36 ] ; then
 	    echo -n "36" > /sys/class/gpio/export
