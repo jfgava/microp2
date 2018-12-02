@@ -1,0 +1,85 @@
+#! /bin/sh
+### BEGIN INIT INFO
+# Provides:          io_init_test
+# Required-Start:    
+# Should-Start:      
+# Required-Stop:     
+# Default-Start:     S
+# Default-Stop:
+# Short-Description: 
+# Description:       
+### END INIT INFO
+
+case "$1" in
+    start|restart|force-reload)
+    # IO4 = Fim de curso 1
+    if [ ! -d /sys/class/gpio/gpio36 ] ; then
+	    echo -n "36" > /sys/class/gpio/export
+	fi
+	echo -n "high" > /sys/class/gpio/gpio36/direction
+	
+	if [ ! -d /sys/class/gpio/gpio37 ] ; then
+	    echo -n "37" > /sys/class/gpio/export
+	fi
+	echo -n "high" > /sys/class/gpio/gpio37/direction
+
+	if [ ! -d /sys/class/gpio/gpio6 ] ; then
+	    echo -n "6" > /sys/class/gpio/export
+	fi
+	echo -n "in" > /sys/class/gpio/gpio6/direction
+	chgrp gpio /sys/class/gpio/gpio6/value
+	chmod g+rw /sys/class/gpio/gpio6/value
+    
+    # IO5 = Fim de curso 2 
+    if [ ! -d /sys/class/gpio/gpio18 ] ; then
+	    echo -n "18" > /sys/class/gpio/export
+	fi
+	echo -n "high" > /sys/class/gpio/gpio18/direction
+	#echo -n "1" > /sys/class/gpio/gpio18/value
+	
+	if [ ! -d /sys/class/gpio/gpio19 ] ; then
+	    echo -n "19" > /sys/class/gpio/export
+	fi
+	echo -n "high" > /sys/class/gpio/gpio19/direction
+	#echo -n "1" > /sys/class/gpio/gpio19/value
+	
+	if [ ! -d /sys/class/gpio/gpio66 ] ; then
+	    echo -n "66" > /sys/class/gpio/export
+	fi
+	echo -n "0" > /sys/class/gpio/gpio66/value
+
+	if [ ! -d /sys/class/gpio/gpio0 ] ; then
+	    echo -n "0" > /sys/class/gpio/export
+	fi
+	echo -n "in" > /sys/class/gpio/gpio0/direction
+	chgrp gpio /sys/class/gpio/gpio0/value
+	chmod g+rw /sys/class/gpio/gpio0/value
+	;;
+    stop)
+    #IO4
+    echo -n "in" > /sys/class/gpio/gpio6/direction
+    echo -n "6" > /sys/class/gpio/unexport
+    echo -n "1" > /sys/class/gpio/gpio36/value
+	echo -n "36" > /sys/class/gpio/unexport
+	echo -n "37" > /sys/class/gpio/unexport
+	
+    #IO5
+    echo -n "in" > /sys/class/gpio/gpio0/direction
+    echo -n "0" > /sys/class/gpio/unexport
+    echo -n "1" > /sys/class/gpio/gpio18/value
+	echo -n "18" > /sys/class/gpio/unexport
+	echo -n "19" > /sys/class/gpio/unexport
+	echo -n "66" > /sys/class/gpio/unexport
+	;;
+    status)
+		echo -n "GPIO: "
+		ls -d /sys/class/gpio/gpio*
+	;;
+    *)
+	echo -n "Usage: $0 " 
+	echo "{start|stop|restart|force-reload|status}"
+	exit 1
+	;;
+esac
+
+exit 0
