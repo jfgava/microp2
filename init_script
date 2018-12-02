@@ -323,6 +323,12 @@ ADC_CONTINUOUS
     chmod g+rw /dev/spidev1.0
 	;;
 	stop)
+		#IO2
+		echo -n "13" > /sys/class/gpio/unexport
+		echo -n "34" > /sys/class/gpio/unexport
+		echo -n "35" > /sys/class/gpio/unexport
+		echo -n "77" > /sys/class/gpio/unexport
+		
 		#IO4
 		echo -n "in" > /sys/class/gpio/gpio6/direction
 		echo -n "6" > /sys/class/gpio/unexport
