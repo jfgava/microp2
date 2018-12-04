@@ -19,7 +19,7 @@ case "$1" in
 	echo -n "out" > /sys/class/gpio/gpio13/direction
 	echo -n "0" > /sys/class/gpio/gpio13/value
 	chgrp gpio /sys/class/gpio/gpio13/value
-	chmod g+r /sys/class/gpio/gpio13/value
+	chmod g+rw /sys/class/gpio/gpio13/value
 	
 	if [ ! -d /sys/class/gpio/gpio34 ] ; then
 	    echo -n "34" > /sys/class/gpio/export
