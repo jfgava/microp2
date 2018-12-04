@@ -30,7 +30,7 @@ void i2c_error(const char *msg)
     exit(-errno);
 }
 
-int initLCD(){ // Return file_descriptor
+int initLCD(int bl_on, int red, int green, int blue){ // Return file_descriptor
 	int fd;
 	
 	//Acesso fácil á interface I2C
@@ -43,8 +43,7 @@ int initLCD(){ // Return file_descriptor
 	i2c_write_reg(fd,LCD_C0,LCD_FUNCTIONSET | LCD_2LINE);
 	usleep(40);  /* Wait for more than 39 us */
 
-	i2c_write_reg(fd,LCD_C0,LCD_DISPLAYSWITCH | LCD_DISPLAYON | 
-			LCD_CURSOROFF | LCD_BLINKOFF);
+	i2c_write_reg(fd,LCD_C0,LCD_DISPLAYSWITCH | LCD_DISPLAYON | LCD_CURSOROFF | LCD_BLINKOFF);
 	usleep(40);	/* Wait for more then 39 us */
 
 	i2c_write_reg(fd,LCD_C0,LCD_SCREENCLEAR);
@@ -52,27 +51,24 @@ int initLCD(){ // Return file_descriptor
 	
 	i2c_write_reg(fd,LCD_C0,LCD_INPUTSET | LCD_ENTRYLEFT | LCD_DECREMENT);
 
-	/* Backlight initialization */
-	if(ioctl(fd,I2C_SLAVE,BL_ADDR) < 0) i2c_error("ioctl on /dev/i2c-0");
-	i2c_write_reg(fd,BL_MODE1,0);
-	i2c_write_reg(fd,BL_LEDOUT,BL_RED_GRPPWM | BL_GREEN_GRPPWM | 
-			BL_BLUE_GRPPWM);
-	i2c_write_reg(fd,BL_MODE2,BL_DMBLNK);
-	
-	i2c_write_reg(fd,BL_RED,255);
-    i2c_write_reg(fd,BL_GREEN,0);
-    i2c_write_reg(fd,BL_BLUE,0);
-	
+	if(bl_on){
+		/* Backlight initialization */
+		if(ioctl(fd,I2C_SLAVE,BL_ADDR) < 0) i2c_error("ioctl on /dev/i2c-0");
+		i2c_write_reg(fd,BL_MODE1,0);
+		i2c_write_reg(fd,BL_LEDOUT,BL_RED_GRPPWM | BL_GREEN_GRPPWM | BL_BLUE_GRPPWM);
+		i2c_write_reg(fd,BL_MODE2,BL_DMBLNK);
+		
+		i2c_write_reg(fd,BL_RED,255);
+		i2c_write_reg(fd,BL_GREEN,0);
+		i2c_write_reg(fd,BL_BLUE,0);
+	}
+
 	return fd;
 }
 
 void setRGB(int fd,int red, int green, int blue){ //RGB BL
 	if((red>=0 && red<256) && (green>=0 && green<256) && (blue>=0 && blue<256)){
 		if(ioctl(fd,I2C_SLAVE,BL_ADDR) < 0) i2c_error("ioctl on /dev/i2c-0");
-		i2c_write_reg(fd,BL_MODE1,0);
-		i2c_write_reg(fd,BL_LEDOUT,BL_RED_GRPPWM | BL_GREEN_GRPPWM | 
-		BL_BLUE_GRPPWM);
-		i2c_write_reg(fd,BL_MODE2,BL_DMBLNK);
 		
 		i2c_write_reg(fd,BL_RED,red);	
 		i2c_write_reg(fd,BL_GREEN,green);
@@ -82,19 +78,27 @@ void setRGB(int fd,int red, int green, int blue){ //RGB BL
 		printf("Invalid RGB values: R %d, G %d, B %d\n",red,green,blue);
 }
 
-void writeLCD(int fd, char msg[]){ // Write string
+void writeLCD(int fd, char msg[], unsigned char line){ // Write string
 	int n,i;
 	
 	n=strlen(msg);
 	if(ioctl(fd,I2C_SLAVE,LCD_ADDR) < 0) i2c_error("ioctl on /dev/i2c-0");
+	
+	i2c_write_reg(fd,LCD_C0,LCD_FUNCTIONSET | line);
+	usleep(40);  /* Wait for more than 39 us */
+	
 	for(i=0;i < n;i++) i2c_write_reg(fd,LCD_RS,msg[i]);
 }
 
-void writeAddrLCD(int fd, unsigned addr, char msg[]){
+void writeAddrLCD(int fd, unsigned addr, char msg[], unsigned char line){
 	int i,n;
 	
 	n=strlen(msg);
 	if(ioctl(fd,I2C_SLAVE,LCD_ADDR) < 0) i2c_error("ioctl on /dev/i2c-0");
+	
+	i2c_write_reg(fd,LCD_C0,LCD_FUNCTIONSET | line);
+	usleep(40);  /* Wait for more than 39 us */
+	
 	i2c_write_reg(fd,LCD_C0,LCD_DDRAMADDRSET | addr);
 	for(i=0;i < n;i++) i2c_write_reg(fd,LCD_RS,msg[i]);
 }
