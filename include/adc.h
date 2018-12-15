@@ -1,4 +1,4 @@
-// NOMES:  
+// NOMES: Jonas Gava
 // ENG10032 - Microcontroladores -- Prova P2
 
 #ifndef ADC_H

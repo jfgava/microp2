@@ -1,29 +1,18 @@
-TARGET=../lib/libp2.a
-SRCS=adc.c spi.c rw_io.c pwm.c lcd.c
-
+TARGET=test
+CC=$(CROSS_COMPILE)gcc
 FLAGS=-O2 -Wall -MMD
 INCLUDE=-I../include
-LIBDIR=
-LIBS=
+LIBDIR=-L../lib
+LIBS=-lp2 -lgalileo2 -lm
 
-CC=$(CROSS_COMPILE)gcc
-CCAR=$(CROSS_COMPILE)ar
-CFLAGS=$(FLAGS) $(INCLUDE)
 LDFLAGS=$(LIBDIR) $(LIBS)
-CCARFLAGS=-crvs
+CFLAGS=$(FLAGS) $(INCLUDE)
 
-all: $(TARGET)
-
-$(TARGET): $(SRCS:.c=.o)
-	$(CCAR) $(CCARFLAGS) $@ $^ 
-
-%.o: %.c
-	$(CC) $(CFLAGS) -c -o $@ $<
-
--include $(SRCS:.c=.d)
-
+all:
+	$(CC) $(CFLAGS) -o $(TARGET) $(TARGET).c $(LDFLAGS)
+	
 clean:
-	rm -f *.o *.d
+	rm -f *.d
 
-distclean: clean
+distclean:
 	rm -f $(TARGET)

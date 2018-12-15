@@ -37,12 +37,6 @@ int main(){
 	static struct pollfd pfd;
 	int i=0;
 	
-	/* gpio37 = in = no pull-up nor pull-down*/
-	//pputs("/sys/class/gpio/export","37");
-	//pputs("/sys/class/gpio/gpio37/direction","in");
-	
-	//pputs("/sys/class/gpio/gpio6/edge","falling");
-	
 	if((pfd.fd=open("/sys/class/gpio/gpio6/value",O_RDONLY)) < 0)
 	{
 			perror("Opening gpio6:");

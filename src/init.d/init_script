@@ -1,0 +1,186 @@
+#! /bin/sh
+### BEGIN INIT INFO
+# Provides:          init_script
+# Required-Start:    
+# Should-Start:      
+# Required-Stop:     
+# Default-Start:     S
+# Default-Stop:
+# Short-Description: general initialization script
+# Description:       general initialization script
+### END INIT INFO
+
+case "$1" in
+    start|restart|force-reload)
+# IO2 output
+	if [ ! -d /sys/class/gpio/gpio13 ] ; then
+	    echo -n "13" > /sys/class/gpio/export
+	fi
+	echo -n "out" > /sys/class/gpio/gpio13/direction
+	echo -n "0" > /sys/class/gpio/gpio13/value
+	chgrp gpio /sys/class/gpio/gpio13/value
+	chmod g+rw /sys/class/gpio/gpio13/value
+	
+	if [ ! -d /sys/class/gpio/gpio34 ] ; then
+	    echo -n "34" > /sys/class/gpio/export
+	fi
+	echo -n "out" > /sys/class/gpio/gpio34/direction
+	echo -n "0" > /sys/class/gpio/gpio34/value
+	
+	if [ ! -d /sys/class/gpio/gpio77 ] ; then
+	    echo -n "77" > /sys/class/gpio/export
+	fi
+	echo -n "0" > /sys/class/gpio/gpio77/value
+	
+	# IO4 - Interrupt
+	if [ ! -d /sys/class/gpio/gpio6 ] ; then
+	    echo -n "6" > /sys/class/gpio/export
+	fi
+	echo -n "in" > /sys/class/gpio/gpio6/direction
+	chgrp gpio /sys/class/gpio/gpio6/value
+	chmod g+r /sys/class/gpio/gpio6/value
+	chgrp gpio /sys/class/gpio/gpio6/edge
+	chmod g+rw /sys/class/gpio/gpio6/edge
+	# gpio36 = 1 => IO4=in	
+	if [ ! -d /sys/class/gpio/gpio36 ] ; then
+	    echo -n "36" > /sys/class/gpio/export
+	fi
+	echo -n "out" > /sys/class/gpio/gpio36/direction
+	echo -n "1" > /sys/class/gpio/gpio36/value
+	# gpio37 = 0 => pull-down
+	if [ ! -d /sys/class/gpio/gpio37 ] ; then
+	    echo -n "37" > /sys/class/gpio/export
+	fi
+	echo -n "out" > /sys/class/gpio/gpio37/direction
+	echo -n "0" > /sys/class/gpio/gpio37/value
+	
+	echo -n "falling" > /sys/class/gpio/gpio6/edge
+	
+#~ # IO4 input pullup
+    #~ if [ ! -d /sys/class/gpio/gpio36 ] ; then
+	    #~ echo -n "36" > /sys/class/gpio/export
+	#~ fi
+	#~ echo -n "high" > /sys/class/gpio/gpio36/direction
+	
+	#~ if [ ! -d /sys/class/gpio/gpio37 ] ; then
+	    #~ echo -n "37" > /sys/class/gpio/export
+	#~ fi
+	#~ echo -n "high" > /sys/class/gpio/gpio37/direction
+
+	#~ if [ ! -d /sys/class/gpio/gpio6 ] ; then
+	    #~ echo -n "6" > /sys/class/gpio/export
+	#~ fi
+	#~ echo -n "in" > /sys/class/gpio/gpio6/direction
+	#~ chgrp gpio /sys/class/gpio/gpio6/value
+	#~ chmod g+rw /sys/class/gpio/gpio6/value
+	
+	
+# A0 INPUT
+# gpio49 = in = neither pull-up nor pull-down
+	if [ ! -d /sys/class/gpio/gpio49 ] ; then
+	    echo -n "49" > /sys/class/gpio/export
+	fi
+	echo -n "in" > /sys/class/gpio/gpio49/direction
+	
+	chgrp adc /sys/bus/iio/devices/iio:device0/in_voltage0_raw
+    chmod g+r /sys/bus/iio/devices/iio:device0/in_voltage0_raw
+    chgrp adc /sys/bus/iio/devices/iio:device0/in_voltage0_scale
+    chmod g+r /sys/bus/iio/devices/iio:device0/in_voltage0_scale
+        
+# IO3 = pwm1
+	if [ ! -d /sys/class/pwm/pwmchip0/pwm1 ] ; then
+	    echo -n "1" > /sys/class/pwm/pwmchip0/export
+	fi
+	chgrp pwm /sys/class/pwm/pwmchip0/device/pwm_period
+	chmod g+w /sys/class/pwm/pwmchip0/device/pwm_period
+	chgrp pwm /sys/class/pwm/pwmchip0/pwm1/duty_cycle
+	chmod g+w /sys/class/pwm/pwmchip0/pwm1/duty_cycle
+	chgrp pwm /sys/class/pwm/pwmchip0/pwm1/enable
+	chmod g+w /sys/class/pwm/pwmchip0/pwm1/enable
+        
+        # gpio16 = 0 = out
+	if [ ! -d /sys/class/gpio/gpio16 ] ; then
+	    echo -n "16" > /sys/class/gpio/export
+	fi
+	echo -n "out" > /sys/class/gpio/gpio16/direction
+	echo -n "0" > /sys/class/gpio/gpio16/value
+
+        # gpio17 = in = no pull-up nor pull-down
+	if [ ! -d /sys/class/gpio/gpio17 ] ; then
+	    echo -n "17" > /sys/class/gpio/export
+	fi
+	echo -n "in" > /sys/class/gpio/gpio17/direction
+        
+        # gpio76 = 0
+	if [ ! -d /sys/class/gpio/gpio76 ] ; then
+	    echo -n "76" > /sys/class/gpio/export
+	fi
+	echo -n "0" > /sys/class/gpio/gpio76/value
+	
+        # gpio64 = 1 */
+	if [ ! -d /sys/class/gpio/gpio64 ] ; then
+	    echo -n "64" > /sys/class/gpio/export
+	fi
+	echo -n "1" > /sys/class/gpio/gpio64/value
+
+	;;
+	stop)
+		#IO2
+		echo -n "13" > /sys/class/gpio/unexport
+		echo -n "34" > /sys/class/gpio/unexport
+		#echo -n "35" > /sys/class/gpio/unexport
+		echo -n "77" > /sys/class/gpio/unexport
+		
+		#IO4
+		echo -n "in" > /sys/class/gpio/gpio6/direction
+		echo -n "none" > /sys/class/gpio/gpio6/edge		#Interrupt
+		echo -n "6" > /sys/class/gpio/unexport
+		echo -n "1" > /sys/class/gpio/gpio36/value
+		echo -n "36" > /sys/class/gpio/unexport
+		echo -n "37" > /sys/class/gpio/unexport
+		
+		
+		
+
+		#PWM(IO3)
+		echo -n "0" > /sys/class/pwm/pwmchip0/pwm1/enable
+		echo -n "76" > /sys/class/gpio/unexport
+		echo -n "64" > /sys/class/gpio/unexport
+		echo -n "17" > /sys/class/gpio/unexport
+		echo -n "1" > /sys/class/gpio/gpio16/value
+		echo -n "16" > /sys/class/gpio/unexport
+		echo -n "1" > /sys/class/pwm/pwmchip0/unexport
+		
+		# A0
+		echo -n "49" > /sys/class/gpio/unexport
+
+	;;
+    status)
+		echo -n GPIO: 
+		ls /sys/class/gpio/
+    	echo -n Period:
+    	cat /sys/class/pwm/pwmchip0/device/pwm_period
+    	echo -n Duty Cycle:
+    	cat /sys/class/pwm/pwmchip0/pwm1/duty_cycle
+    	echo -n Enable:
+    	cat /sys/class/pwm/pwmchip0/pwm1/enable
+    	echo -n Trigger:
+    	cat /sys/bus/iio/devices/iio:device0/trigger/current_trigger
+	;;
+    *)
+	echo -n "Usage: $0 " 
+	echo "{start|stop|restart|force-reload|status}"
+	exit 1
+	;;
+esac
+
+exit 0
+	
+	
+	
+	
+	
+	
+	
+	
+	
